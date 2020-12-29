@@ -11,7 +11,7 @@ import tweepy
 APP = typer.Typer()
 
 
-def make_config():
+def _make_config():
     '''
     Load the config from a file.
     '''
@@ -19,7 +19,7 @@ def make_config():
     return json.load(config)
 
 
-def make_api(config):
+def _make_api(config):
     '''
     Make a Tweepy api object.
     '''
@@ -41,32 +41,32 @@ def make_api(config):
     return api
 
 
-@APP.command
+@APP.command()
 def unblock():
     '''
     Unblock all the users the authenticated user is blocking.
     '''
-    api = make_api(make_config())
+    api = _make_api(_make_config())
 
     blocked_users = api.blocks_ids()
 
-    with typer.progressbar(blocked_users, label="Unblocking") as blocked_users_progress:
+    with typer.progressbar(blocked_users, label='Unblocking') as blocked_users_progress:
         for user in blocked_users_progress:
             api.destroy_block(user)
 
     typer.echo(f'Unblocked {len(blocked_users)} users')
 
 
-@APP.command
+@APP.command()
 def unmute():
     '''
     Unmute all the users the authenticated user is muting.
     '''
-    api = make_api(make_config())
+    api = _make_api(_make_config())
 
     muted_users = api.mutes_ids()
 
-    with typer.progressbar(muted_users, label="Unmuting") as muted_users_progress:
+    with typer.progressbar(muted_users, label='Unmuting') as muted_users_progress:
         for user in muted_users_progress:
             api.destroy_mute(user)
 
